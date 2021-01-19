@@ -42,7 +42,7 @@ arcpy.AddField_management("utah_vp_civix.shp", "COUNTY_NUM", "TEXT", field_lengt
                           field_alias="County Number", field_is_nullable="NULLABLE")
 arcpy.AddField_management("utah_vp_civix.shp", "PRECINCT", "TEXT", field_length=25,
                           field_alias="County Precinct", field_is_nullable="NULLABLE")
-arcpy.AddField_management("utah_vp_civix.shp", "CITY_EST", "TEXT", field_length=25,
+arcpy.AddField_management("utah_vp_civix.shp", "CITY_EST", "TEXT", field_length=100,
                           field_alias="Municipal Precinct", field_is_nullable="NULLABLE")
 arcpy.AddField_management("utah_vp_civix.shp", "DIST_CONG", "TEXT", field_length=25,
                           field_alias="US Congressional District", field_is_nullable="NULLABLE")
@@ -108,7 +108,9 @@ r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_s
 
 #: spatially join municipalities
 print("spatially join utah senate 2012 from sgid county layer")
-
+arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_spjoin4.shp", sgid_muni, "sgid_pcts_dissolved_spjoin5.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
+r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin4.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin4.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin4.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin4,DIST_CONG,-1,-1;DIST_STSEN "DIST_STSEN" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin4,DIST_STSEN,-1,-1;DIST_STASS "DIST_STASS" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin4,DIST_STASS,-1,-1;CITY_EST "CITY_EST" true true false 100 Text 0 0,First,#,sgid_muni,SHORTDESC,0,100',
+"HAVE_THEIR_CENTER_IN", None, '')
 
 
 #: spatially join judicial districts
@@ -123,4 +125,4 @@ print("spatially join school districts from sgid county layer")
 
 #: APPEND THE JOINED DATA TO THE CIVIX SCHEMA (use the last spatially joined output file for the input)
 print("append the intermediate spatially joined data to the final output civix schema")
-arcpy.Append_management("sgid_pcts_dissolved_spjoin4.shp", "utah_vp_civix.shp", "NO_TEST")
+arcpy.Append_management("sgid_pcts_dissolved_spjoin5.shp", "utah_vp_civix.shp", "NO_TEST")
