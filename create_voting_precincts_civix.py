@@ -73,14 +73,8 @@ arcpy.Dissolve_management("sgid_pcts.shp", "sgid_pcts_dissolved.shp",
                           "PRECINCT", "", "MULTI_PART", 
                           "DISSOLVE_LINES")
 
-#: SPATIAL JOINS (notes: the field mapping section is semi-colon delimeted - we're also renaming some fields in that piece (at the begining of the mapping string for that field). it' easier to view the field mapping as separate lines and then pull them back together before running the script)
 
-# def spatial_join(target_feat, join_feat, out_feat, fieldname1, newfieldname1, fieldname2, newfieldname2, fieldname3=None, newfieldname3=None, fieldname4=None, newfieldname4=None):
-#     #: build field mapping string
-#     fieldmapping1 = fieldname1 + ' "' + fieldname1 + '" ' + 'true true false 50 Text 0, 0, First, #, "' + target_feat + '",' + newfieldname1 + ',0,50;'
-#     fieldmapping2 = fieldname2 + ' "' + fieldname2 + '" ' + 'true true false 50 Text 0, 0, First, #, "' + target_feat + '",' + newfieldname2 + ',0,50;'
-#     if fieldname3 is not None:
-#         fieldmapping3 = fieldname3 + ' "' + fieldname3 + '" ' + 'true true false 50 Text 0, 0, First, #, "' + join_feat + '",' + newfieldname3 + ',0,50;'
+#: SPATIAL JOINS (notes: the field mapping section is semi-colon delimeted - we're also renaming some fields in that piece (at the begining of the mapping string for that field). it' easier to view the field mapping as separate lines and then pull them back together before running the script)
 
 #: spatially join countyid and countyname
 print("spatially join countyid and countyname from sgid county layer")
@@ -114,11 +108,11 @@ r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_s
 
 #: spatially join school districts
 print("spatially join school districts from sgid county layer")
-arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_spjoin6.shp", sgid_schooldist, "sgid_pcts_dissolved_spjoin7.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
-r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin6.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin6.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin6.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin6,DIST_CONG,-1,-1;DIST_STSEN "DIST_STSEN" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin6,DIST_STSEN,-1,-1;DIST_STASS "DIST_STASS" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin6,DIST_STASS,-1,-1;CITY_EST "CITY_EST" true true false 100 Text 0 0,First,#,sgid_pcts_dissolved_spjoin6,CITY_EST,0,100;DST_JRC "DST_JRC" true true false 10 Text 0 0,First,#,sgid_pcts_dissolved_spjoin6,DST_JRC,0,10;DST_USD "DST_USD" true true false 60 Text 0 0,First,#,sgid_schooldist,NAME,0,60',
-"HAVE_THEIR_CENTER_IN", None, '')
+# arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_spjoin6.shp", sgid_schooldist, "sgid_pcts_dissolved_spjoin7.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
+# r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin6.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin6.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin6.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin6,DIST_CONG,-1,-1;DIST_STSEN "DIST_STSEN" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin6,DIST_STSEN,-1,-1;DIST_STASS "DIST_STASS" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin6,DIST_STASS,-1,-1;CITY_EST "CITY_EST" true true false 100 Text 0 0,First,#,sgid_pcts_dissolved_spjoin6,CITY_EST,0,100;DST_JRC "DST_JRC" true true false 10 Text 0 0,First,#,sgid_pcts_dissolved_spjoin6,DST_JRC,0,10;DST_USD "DST_USD" true true false 60 Text 0 0,First,#,sgid_schooldist,NAME,0,60',
+# "HAVE_THEIR_CENTER_IN", None, '')
 
 
 #: APPEND THE JOINED DATA TO THE CIVIX SCHEMA (use the last spatially joined output file for the input)
 print("append the intermediate spatially joined data to the final output civix schema")
-arcpy.Append_management("sgid_pcts_dissolved_spjoin7.shp", "utah_vp_civix.shp", "NO_TEST")
+arcpy.Append_management("sgid_pcts_dissolved_spjoin6.shp", "utah_vp_civix.shp", "NO_TEST")
