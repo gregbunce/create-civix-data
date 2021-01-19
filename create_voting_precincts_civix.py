@@ -94,24 +94,33 @@ arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_spjoin1.shp", sgid_congdist, "sg
 r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin1.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin1.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin1.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_congdist,DISTRICT,-1,-1',
 "HAVE_THEIR_CENTER_IN", None, '')
 
-#: spatially join utah senate 2012
-print("spatially join utah senate 2012 from sgid county layer")
+#: spatially join utah state senate 2012
+print("spatially join utah state senate 2012 from sgid county layer")
 arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_spjoin2.shp", sgid_utahsenate, "sgid_pcts_dissolved_spjoin3.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
-r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin2.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin2.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin2.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin2,DISTRICT,-1,-1;DIST_STSEN "DIST_STSEN" true true false 2 Short 0 5,First,#,sgid_utahsenate,DIST,-1,-1',
+r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin2.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin2.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin2.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin2,DIST_CONG,-1,-1;DIST_STSEN "DIST_STSEN" true true false 2 Short 0 5,First,#,sgid_utahsenate,DIST,-1,-1',
 "HAVE_THEIR_CENTER_IN", None, '')
 
-#: spatially join utah house 2012
-
+#: spatially join utah state house 2012
+print("spatially join utah state house 2012 from sgid county layer")
+arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_spjoin3.shp", sgid_utahhouse, "sgid_pcts_dissolved_spjoin4.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
+r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin3.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin3.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin3.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin3,DIST_CONG,-1,-1;DIST_STSEN "DIST_STSEN" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin3,DIST_STSEN,-1,-1;DIST_STASS "DIST_STASS" true true false 2 Short 0 5,First,#,sgid_utahhouse,DIST,-1,-1',
+"HAVE_THEIR_CENTER_IN", None, '')
 
 #: spatially join municipalities
+print("spatially join utah senate 2012 from sgid county layer")
+
 
 
 #: spatially join judicial districts
+print("spatially join municipalities from sgid county layer")
+
 
 
 #: spatially join school districts
+print("spatially join school districts from sgid county layer")
 
 
-#: APPEND THE JOINED DATA TO THE CIVIX SCHEMA
+
+#: APPEND THE JOINED DATA TO THE CIVIX SCHEMA (use the last spatially joined output file for the input)
 print("append the intermediate spatially joined data to the final output civix schema")
-arcpy.Append_management("sgid_pcts_dissolved_spjoin2.shp", "utah_vp_civix.shp", "NO_TEST")
+arcpy.Append_management("sgid_pcts_dissolved_spjoin4.shp", "utah_vp_civix.shp", "NO_TEST")
