@@ -73,7 +73,7 @@ arcpy.Dissolve_management("sgid_pcts.shp", "sgid_pcts_dissolved.shp",
                           "PRECINCT", "", "MULTI_PART", 
                           "DISSOLVE_LINES")
 
-#: SPATIAL JOINS (notes: the field mapping section is semi-colon delimeted - we're also renaming some fields in the field mapping piece (at the begining of the mapping string for that field))
+#: SPATIAL JOINS (notes: the field mapping section is semi-colon delimeted - we're also renaming some fields in that piece (at the begining of the mapping string for that field). it' easier to view the field mapping as separate lines and then pull them back together before running the script)
 
 # def spatial_join(target_feat, join_feat, out_feat, fieldname1, newfieldname1, fieldname2, newfieldname2, fieldname3=None, newfieldname3=None, fieldname4=None, newfieldname4=None):
 #     #: build field mapping string
@@ -85,37 +85,33 @@ arcpy.Dissolve_management("sgid_pcts.shp", "sgid_pcts_dissolved.shp",
 #: spatially join countyid and countyname
 print("spatially join countyid and countyname from sgid county layer")
 arcpy.analysis.SpatialJoin("sgid_pcts_dissolved.shp", sgid_counties, "sgid_pcts_dissolved_spjoin1.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
-r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,sgid_counties,COUNTYNBR,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,sgid_counties,NAME,0,100',
-"HAVE_THEIR_CENTER_IN", None, '')
+r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,sgid_counties,COUNTYNBR,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,sgid_counties,NAME,0,100',"HAVE_THEIR_CENTER_IN", None, '')
 
 #: spatially join congressional district 2012
 print("spatially join congressional district 2012 from sgid county layer")
 arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_spjoin1.shp", sgid_congdist, "sgid_pcts_dissolved_spjoin2.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
-r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin1.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin1.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin1.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_congdist,DISTRICT,-1,-1',
-"HAVE_THEIR_CENTER_IN", None, '')
+r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin1.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin1.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin1.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_congdist,DISTRICT,-1,-1',"HAVE_THEIR_CENTER_IN", None, '')
 
 #: spatially join utah state senate 2012
 print("spatially join utah state senate 2012 from sgid county layer")
 arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_spjoin2.shp", sgid_utahsenate, "sgid_pcts_dissolved_spjoin3.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
-r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin2.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin2.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin2.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin2,DIST_CONG,-1,-1;DIST_STSEN "DIST_STSEN" true true false 2 Short 0 5,First,#,sgid_utahsenate,DIST,-1,-1',
-"HAVE_THEIR_CENTER_IN", None, '')
+r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin2.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin2.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin2.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin2,DIST_CONG,-1,-1;DIST_STSEN "DIST_STSEN" true true false 2 Short 0 5,First,#,sgid_utahsenate,DIST,-1,-1',"HAVE_THEIR_CENTER_IN", None, '')
 
 #: spatially join utah state house 2012
 print("spatially join utah state house 2012 from sgid county layer")
 arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_spjoin3.shp", sgid_utahhouse, "sgid_pcts_dissolved_spjoin4.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
-r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin3.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin3.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin3.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin3,DIST_CONG,-1,-1;DIST_STSEN "DIST_STSEN" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin3,DIST_STSEN,-1,-1;DIST_STASS "DIST_STASS" true true false 2 Short 0 5,First,#,sgid_utahhouse,DIST,-1,-1',
-"HAVE_THEIR_CENTER_IN", None, '')
+r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin3.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin3.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin3.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin3,DIST_CONG,-1,-1;DIST_STSEN "DIST_STSEN" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin3,DIST_STSEN,-1,-1;DIST_STASS "DIST_STASS" true true false 2 Short 0 5,First,#,sgid_utahhouse,DIST,-1,-1',"HAVE_THEIR_CENTER_IN", None, '')
 
 #: spatially join municipalities
 print("spatially join utah senate 2012 from sgid county layer")
 arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_spjoin4.shp", sgid_muni, "sgid_pcts_dissolved_spjoin5.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
-r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin4.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin4.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin4.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin4,DIST_CONG,-1,-1;DIST_STSEN "DIST_STSEN" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin4,DIST_STSEN,-1,-1;DIST_STASS "DIST_STASS" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin4,DIST_STASS,-1,-1;CITY_EST "CITY_EST" true true false 100 Text 0 0,First,#,sgid_muni,SHORTDESC,0,100',
-"HAVE_THEIR_CENTER_IN", None, '')
+r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin4.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin4.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin4.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin4,DIST_CONG,-1,-1;DIST_STSEN "DIST_STSEN" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin4,DIST_STSEN,-1,-1;DIST_STASS "DIST_STASS" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin4,DIST_STASS,-1,-1;CITY_EST "CITY_EST" true true false 100 Text 0 0,First,#,sgid_muni,SHORTDESC,0,100',"HAVE_THEIR_CENTER_IN", None, '')
 
 
 #: spatially join judicial districts
 print("spatially join municipalities from sgid county layer")
-
+arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_spjoin5.shp", sgid_judicial, "sgid_pcts_dissolved_spjoin6.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
+r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin5.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin5.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin5.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin5,DIST_CONG,-1,-1;DIST_STSEN "DIST_STSEN" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin5,DIST_STSEN,-1,-1;DIST_STASS "DIST_STASS" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin5,DIST_STASS,-1,-1;CITY_EST "CITY_EST" true true false 10 Text 0 0,First,#,sgid_pcts_dissolved_spjoin5,CITY_EST,0,100;DST_JRC "DST_JRC" true true false 10 Text 0 0,First,#,sgid_judicial,DISTRICT,0,10',"HAVE_THEIR_CENTER_IN", None, '')
 
 
 #: spatially join school districts
@@ -125,4 +121,4 @@ print("spatially join school districts from sgid county layer")
 
 #: APPEND THE JOINED DATA TO THE CIVIX SCHEMA (use the last spatially joined output file for the input)
 print("append the intermediate spatially joined data to the final output civix schema")
-arcpy.Append_management("sgid_pcts_dissolved_spjoin5.shp", "utah_vp_civix.shp", "NO_TEST")
+arcpy.Append_management("sgid_pcts_dissolved_spjoin6.shp", "utah_vp_civix.shp", "NO_TEST")
