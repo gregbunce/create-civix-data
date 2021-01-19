@@ -8,7 +8,7 @@ year = now.year
 month = now.month
 day = now.day
 folder_name = str(year) + "_" + str(month) + "_" + str(day)
-#: create the folder
+#: create the output folder one directory up from the current
 directory = "..\\" + folder_name
 try:
     os.makedirs(directory)
@@ -22,11 +22,11 @@ internal_sgid_connection = "C:\\Users\\gbunce\\AppData\\Roaming\\ESRI\\ArcGISPro
 sgid_vpcts = internal_sgid_connection + "\\SGID.POLITICAL.VistaBallotAreas"
 sgid_counties = internal_sgid_connection + "\\SGID.BOUNDARIES.Counties"
 sgid_congdist = internal_sgid_connection + "\\SGID.POLITICAL.USCongressDistricts2012"
-sgid_utahhouse = internal_sgid_connection + ""
-sgid_utahsenate = internal_sgid_connection + ""
-sgid_muni = internal_sgid_connection + ""
-sgid_judicial = internal_sgid_connection + ""
-sgid_schooldist = internal_sgid_connection + ""
+sgid_utahhouse = internal_sgid_connection + "\\SGID.POLITICAL.UtahHouseDistricts2012"
+sgid_utahsenate = internal_sgid_connection + "\\SGID.POLITICAL.UtahSenateDistricts2012"
+sgid_muni = internal_sgid_connection + "\\SGID.BOUNDARIES.Municipalities"
+sgid_judicial = internal_sgid_connection + "\\SGID.POLITICAL.JudicialDistricts"
+sgid_schooldist = internal_sgid_connection + "\\SGID.BOUNDARIES.SchoolDistricts"
 
 #: create civix shapefile
 print("createing new civix shapefile")
@@ -46,6 +46,8 @@ arcpy.AddField_management("utah_vp_civix.shp", "CITY_EST", "TEXT", field_length=
                           field_alias="Municipal Precinct", field_is_nullable="NULLABLE")
 arcpy.AddField_management("utah_vp_civix.shp", "DIST_CONG", "TEXT", field_length=25,
                           field_alias="US Congressional District", field_is_nullable="NULLABLE")
+arcpy.AddField_management("utah_vp_civix.shp", "DIST_STSEN", "TEXT", field_length=25,
+                          field_alias="State Senate District", field_is_nullable="NULLABLE")
 arcpy.AddField_management("utah_vp_civix.shp", "DIST_STASS", "TEXT", field_length=25,
                           field_alias="State House District", field_is_nullable="NULLABLE")
 arcpy.AddField_management("utah_vp_civix.shp", "DST_JRC", "TEXT", field_length=25,
@@ -71,27 +73,43 @@ arcpy.Dissolve_management("sgid_pcts.shp", "sgid_pcts_dissolved.shp",
                           "PRECINCT", "", "MULTI_PART", 
                           "DISSOLVE_LINES")
 
-#: SPATIAL JOINS (notes: the field mapping section is semi-colon delimeted - we're also renaming some fields in the field mapping piece (at the begining of the line))
-def spatial_join(target_feat, join_feat, out_feat, fieldname1, newfieldname1, fieldname2, newfieldname2, fieldname3=None, newfieldname3=None, fieldname4=None, newfieldname4=None):
-    #: build field mapping string
-    fieldmapping1 = fieldname1 + ' "' + fieldname1 + '" ' + 'true true false 50 Text 0, 0, First, #, "' + target_feat + '",' + newfieldname1 + ',0,50;'
-    fieldmapping2 = fieldname2 + ' "' + fieldname2 + '" ' + 'true true false 50 Text 0, 0, First, #, "' + target_feat + '",' + newfieldname2 + ',0,50;'
-    if fieldname3 is not None:
-        fieldmapping3 = fieldname3 + ' "' + fieldname3 + '" ' + 'true true false 50 Text 0, 0, First, #, "' + join_feat + '",' + newfieldname3 + ',0,50;'
+#: SPATIAL JOINS (notes: the field mapping section is semi-colon delimeted - we're also renaming some fields in the field mapping piece (at the begining of the mapping string for that field))
 
+# def spatial_join(target_feat, join_feat, out_feat, fieldname1, newfieldname1, fieldname2, newfieldname2, fieldname3=None, newfieldname3=None, fieldname4=None, newfieldname4=None):
+#     #: build field mapping string
+#     fieldmapping1 = fieldname1 + ' "' + fieldname1 + '" ' + 'true true false 50 Text 0, 0, First, #, "' + target_feat + '",' + newfieldname1 + ',0,50;'
+#     fieldmapping2 = fieldname2 + ' "' + fieldname2 + '" ' + 'true true false 50 Text 0, 0, First, #, "' + target_feat + '",' + newfieldname2 + ',0,50;'
+#     if fieldname3 is not None:
+#         fieldmapping3 = fieldname3 + ' "' + fieldname3 + '" ' + 'true true false 50 Text 0, 0, First, #, "' + join_feat + '",' + newfieldname3 + ',0,50;'
 
-#: spatially join the countyid and countyname
+#: spatially join countyid and countyname
 print("spatially join countyid and countyname from sgid county layer")
 arcpy.analysis.SpatialJoin("sgid_pcts_dissolved.shp", sgid_counties, "sgid_pcts_dissolved_spjoin1.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
 r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,sgid_counties,COUNTYNBR,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,sgid_counties,NAME,0,100',
 "HAVE_THEIR_CENTER_IN", None, '')
 
-#: spatially join the congressional district 2012
+#: spatially join congressional district 2012
 print("spatially join congressional district 2012 from sgid county layer")
 arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_spjoin1.shp", sgid_congdist, "sgid_pcts_dissolved_spjoin2.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
 r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin1.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin1.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin1.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_congdist,DISTRICT,-1,-1',
 "HAVE_THEIR_CENTER_IN", None, '')
 
+#: spatially join utah senate 2012
+print("spatially join utah senate 2012 from sgid county layer")
+arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_spjoin2.shp", sgid_utahsenate, "sgid_pcts_dissolved_spjoin3.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
+r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin2.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin2.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin2.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin2,DISTRICT,-1,-1;DIST_STSEN "DIST_STSEN" true true false 2 Short 0 5,First,#,sgid_utahsenate,DIST,-1,-1',
+"HAVE_THEIR_CENTER_IN", None, '')
+
+#: spatially join utah house 2012
+
+
+#: spatially join municipalities
+
+
+#: spatially join judicial districts
+
+
+#: spatially join school districts
 
 
 #: APPEND THE JOINED DATA TO THE CIVIX SCHEMA
