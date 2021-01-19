@@ -9,7 +9,7 @@ month = now.month
 day = now.day
 folder_name = str(year) + "_" + str(month) + "_" + str(day)
 #: create the folder
-directory = "C:\\Users\\gbunce\\Documents\\projects\\vista\\civix_data\\" + folder_name
+directory = "..\\" + folder_name
 try:
     os.makedirs(directory)
 except OSError as e:
@@ -71,8 +71,15 @@ arcpy.Dissolve_management("sgid_pcts.shp", "sgid_pcts_dissolved.shp",
                           "PRECINCT", "", "MULTI_PART", 
                           "DISSOLVE_LINES")
 
-
 #: SPATIAL JOINS (notes: the field mapping section is semi-colon delimeted - we're also renaming some fields in the field mapping piece (at the begining of the line))
+def spatial_join(target_feat, join_feat, out_feat, fieldname1, newfieldname1, fieldname2, newfieldname2, fieldname3=None, newfieldname3=None, fieldname4=None, newfieldname4=None):
+    #: build field mapping string
+    fieldmapping1 = fieldname1 + ' "' + fieldname1 + '" ' + 'true true false 50 Text 0, 0, First, #, "' + target_feat + '",' + newfieldname1 + ',0,50;'
+    fieldmapping2 = fieldname2 + ' "' + fieldname2 + '" ' + 'true true false 50 Text 0, 0, First, #, "' + target_feat + '",' + newfieldname2 + ',0,50;'
+    if fieldname3 is not None:
+        fieldmapping3 = fieldname3 + ' "' + fieldname3 + '" ' + 'true true false 50 Text 0, 0, First, #, "' + join_feat + '",' + newfieldname3 + ',0,50;'
+
+
 #: spatially join the countyid and countyname
 print("spatially join countyid and countyname from sgid county layer")
 arcpy.analysis.SpatialJoin("sgid_pcts_dissolved.shp", sgid_counties, "sgid_pcts_dissolved_spjoin1.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
@@ -84,6 +91,7 @@ print("spatially join congressional district 2012 from sgid county layer")
 arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_spjoin1.shp", sgid_congdist, "sgid_pcts_dissolved_spjoin2.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
 r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin1.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin1.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin1.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_congdist,DISTRICT,-1,-1',
 "HAVE_THEIR_CENTER_IN", None, '')
+
 
 
 #: APPEND THE JOINED DATA TO THE CIVIX SCHEMA
