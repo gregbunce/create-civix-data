@@ -28,7 +28,7 @@ sgid_muni = internal_sgid_connection + "\\SGID.BOUNDARIES.Municipalities"
 sgid_judicial = internal_sgid_connection + "\\SGID.POLITICAL.JudicialDistricts"
 sgid_schooldist = internal_sgid_connection + "\\SGID.BOUNDARIES.SchoolDistricts"
 
-#: create civix shapefile
+#: create civix, electionet shapefile
 print("createing new civix shapefile")
 arcpy.CreateFeatureclass_management(directory, "utah_vp_civix.shp", "POLYGON", 
                                     "", "DISABLED", "DISABLED", 
@@ -52,7 +52,7 @@ arcpy.AddField_management("utah_vp_civix.shp", "DIST_STASS", "TEXT", field_lengt
                           field_alias="State House District", field_is_nullable="NULLABLE")
 arcpy.AddField_management("utah_vp_civix.shp", "DST_JRC", "TEXT", field_length=25,
                           field_alias="Judicial District", field_is_nullable="NULLABLE")
-arcpy.AddField_management("utah_vp_civix.shp", "DST_USD", "TEXT", field_length=60,
+arcpy.AddField_management("utah_vp_civix.shp", "DST_USD", "TEXT", field_length=25,
                           field_alias="School District", field_is_nullable="NULLABLE")
 arcpy.AddField_management("utah_vp_civix.shp", "DIST_BEQ", "TEXT", field_length=25,
                           field_alias="County Commissioner District", field_is_nullable="NULLABLE")
@@ -75,7 +75,6 @@ arcpy.Dissolve_management("sgid_pcts.shp", "sgid_pcts_dissolved.shp",
 
 
 #: SPATIAL JOINS (notes: the field mapping section is semi-colon delimeted - we're also renaming some fields in that piece (at the begining of the mapping string for that field). it' easier to view the field mapping as separate lines and then pull them back together before running the script)
-
 #: spatially join countyid and countyname
 print("spatially join countyid and countyname from sgid county layer")
 arcpy.analysis.SpatialJoin("sgid_pcts_dissolved.shp", sgid_counties, "sgid_pcts_dissolved_spjoin1.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
