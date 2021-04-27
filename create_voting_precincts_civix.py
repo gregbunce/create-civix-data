@@ -71,7 +71,7 @@ arcpy.CalculateField_management("sgid_pcts.shp", "PRECINCT", "str(!VistaID!)", "
 #: dissolve the sgid vista ballot areas based on county number and vistaid
 print("dissolving sgid vista ballot areas based on countyid and vistaid")
 arcpy.Dissolve_management("sgid_pcts.shp", "sgid_pcts_dissolved.shp",
-                          "PRECINCT", "", "MULTI_PART", 
+                          ["CountyID", "PRECINCT"], "", "MULTI_PART", 
                           "DISSOLVE_LINES")
 
 
