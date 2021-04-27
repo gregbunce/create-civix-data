@@ -1,6 +1,6 @@
 import arcpy, os, errno, datetime
 
-#: Notes: use python3
+#: Notes: use arcgispro-py3
 
 #: Create a folder based on the date (ie: Year_Month_Day = 2021_1_15)
 now = datetime.datetime.now()
@@ -32,7 +32,7 @@ sgid_schooldist = internal_sgid_connection + "\\SGID.BOUNDARIES.SchoolDistricts"
 print("createing new civix shapefile")
 arcpy.CreateFeatureclass_management(directory, "utah_vp_civix.shp", "POLYGON", 
                                     "", "DISABLED", "DISABLED", 
-                                    "wgs84_projection.prj")
+                                    "wgs84_aux_sphere.prj")
 
 #: add fields using civix schema
 print("adding fields to new civix shapefile")
@@ -65,7 +65,8 @@ arcpy.FeatureClassToFeatureClass_conversion(sgid_vpcts, directory, "sgid_pcts.sh
 
 arcpy.AddField_management("sgid_pcts.shp", "PRECINCT", "TEXT", field_length=50, field_is_nullable="NULLABLE")
 print("calculate the PRECINCT (uniqueid) field based on countyid and vistaid")
-arcpy.CalculateField_management("sgid_pcts.shp", "PRECINCT", "str(!CountyID!) + str(!VistaID!)", "PYTHON3")
+#arcpy.CalculateField_management("sgid_pcts.shp", "PRECINCT", "str(!CountyID!) + str(!VistaID!)", "PYTHON3") #this was the original way they wanted the data.
+arcpy.CalculateField_management("sgid_pcts.shp", "PRECINCT", "str(!VistaID!)", "PYTHON3")
 
 #: dissolve the sgid vista ballot areas based on county number and vistaid
 print("dissolving sgid vista ballot areas based on countyid and vistaid")
