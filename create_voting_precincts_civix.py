@@ -32,7 +32,7 @@ sgid_schooldist = internal_sgid_connection + "\\SGID.BOUNDARIES.SchoolDistricts"
 print("createing new civix shapefile")
 arcpy.CreateFeatureclass_management(directory, "utah_vp_civix.shp", "POLYGON", 
                                     "", "DISABLED", "DISABLED", 
-                                    "wgs84_aux_sphere.prj")
+                                    "WGS84_4326.prj")
 
 #: add fields using civix schema
 print("adding fields to new civix shapefile")

@@ -2,7 +2,7 @@ import arcpy, os, shutil, zipfile, glob
 
 ####: Notes: Use arcgispro-py3
 ####: Notes: Update the latest_civix_shapefile variable to the newest data.
-latest_civix_shapefile = 'C:\\Users\\gbunce\\Documents\\projects\\vista\\civix_data\\2021_4_27\\utah_vp_civix.shp'
+latest_civix_shapefile = 'C:\\Users\\gbunce\\Documents\\projects\\vista\\civix_data\\2021_5_3\\utah_vp_civix.shp'
 shapefile_directory = latest_civix_shapefile.rsplit('\\', 1)[0]
 
 
