@@ -1,10 +1,9 @@
 # create-civix-data
-This repo contains scripts for creating data used in the Civix ElectioNet system
+This repo contains scripts for creating the data (zipped shapefiles) used in the Civix ElectioNet system
 
 use arcgispro-py3
 
-connect to state network to gain access to Internal SGID
-
-1. run create_voting_precincts_civix.py
-2. export_by_county_and_zip_shpfile.py (remember to re-point the shapefile variable)
-3. upload output to google drive where Civix will pick up the data.
+1. connect to state network to gain access to Internal SGID
+2. run create_voting_precincts_civix.py
+3. export_by_county_and_zip_shpfile.py (remember to re-point the shapefile variable)
+4. upload zipped shapefiles to google drive where the Civix team can access them
