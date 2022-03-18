@@ -2,7 +2,7 @@ import arcpy, os, shutil, zipfile, glob
 
 ####: Notes: Use arcgispro-py3
 ####: Notes: Update the 'latest_civix_shapefile' variable to the newest data.
-latest_civix_shapefile = 'C:\\Users\\gbunce\\Documents\\projects\\vista\\civix_data\\2021_12_7\\utah_vp_civix.shp'
+latest_civix_shapefile = 'C:\\Users\\gbunce\\Documents\\projects\\vista\\civix_data\\2022_3_7\\utah_vp_civix.shp'
 shapefile_directory = latest_civix_shapefile.rsplit('\\', 1)[0]
 
 
@@ -87,3 +87,4 @@ for county in county_names:
 
     # zip the shapefile
     ZipShp(outLocation + "\\" + outFeatureClass, False)
+    
