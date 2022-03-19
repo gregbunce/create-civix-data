@@ -74,11 +74,18 @@ arcpy.Dissolve_management("sgid_pcts.shp", "sgid_pcts_dissolved.shp",
                           ["CountyID", "PRECINCT"], "", "MULTI_PART", 
                           "DISSOLVE_LINES")
 
+#: convert the voting precincts shapefile into points using 'feature to point' (use centroid, with point "inside" polygon). the step will ensure the districts get assigned correctly (using the point within the polygon)
+print("converting polygon voting precincts to points")
+arcpy.FeatureToPoint_management("sgid_pcts_dissolved.shp", "sgid_pcts_dissolved_points.shp", "INSIDE")
+
+# .....DO WORK HERE..... (change below code to use the point features)
+
+
 
 #: SPATIAL JOINS (notes: the field mapping section is semi-colon delimeted - we're also renaming some fields in that piece (at the begining of the mapping string for that field). it' easier to view the field mapping as separate lines and then pull them back together before running the script)
 #: spatially join countyid and countyname
 print("spatially join countyid and countyname from sgid county layer")
-arcpy.analysis.SpatialJoin("sgid_pcts_dissolved.shp", sgid_counties, "sgid_pcts_dissolved_spjoin1.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
+arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_points.shp", sgid_counties, "sgid_pcts_dissolved_spjoin1.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
 r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,sgid_counties,COUNTYNBR,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,sgid_counties,NAME,0,100',"HAVE_THEIR_CENTER_IN", None, '')
 
 #: spatially join congressional district 2022 to 2032
@@ -111,7 +118,9 @@ print("spatially join school board districts from sgid county layer")
 arcpy.analysis.SpatialJoin("sgid_pcts_dissolved_spjoin6.shp", sgid_schoolboarddist, "sgid_pcts_dissolved_spjoin7.shp", "JOIN_ONE_TO_ONE", "KEEP_ALL",
 r'PRECINCT "PRECINCT" true true false 50 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin6.shp",PRECINCT,0,50;COUNTY_NUM "COUNTY_NUM" true true false 2 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin6.shp",COUNTY_NUM,0,2;COUNTY_NAM "COUNTY_NAM" true true false 100 Text 0 0,First,#,"sgid_pcts_dissolved_spjoin6.shp",COUNTY_NAM,0,100;DIST_CONG "DIST_CONG" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin6,DIST_CONG,-1,-1;DIST_STSEN "DIST_STSEN" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin6,DIST_STSEN,-1,-1;DIST_STASS "DIST_STASS" true true false 2 Short 0 5,First,#,sgid_pcts_dissolved_spjoin6,DIST_STASS,-1,-1;CITY_EST "CITY_EST" true true false 100 Text 0 0,First,#,sgid_pcts_dissolved_spjoin6,CITY_EST,0,100;DST_JRC "DST_JRC" true true false 10 Text 0 0,First,#,sgid_pcts_dissolved_spjoin6,DST_JRC,0,10;DST_USD "DST_USD" true true false 60 Text 0 0,First,#,sgid_schoolboarddist,DIST,0,60',"HAVE_THEIR_CENTER_IN", None, '')
 
+#: Joint the point data back to polygons (join sgid_pcts_dissolved.shp (polygon) to sgid_pcts_dissolved_spjoin7.shp (point)).
+sgid_pct_dissolved_joined = arcpy.AddJoin_management("sgid_pcts_dissolved.shp", "FID", "sgid_pcts_dissolved_spjoin7.shp", "TARGET_FID")
 
 #: APPEND THE JOINED DATA TO THE CIVIX SCHEMA (use the last spatially joined output file for the input)
 print("append the intermediate spatially joined data to the final output civix schema")
-arcpy.Append_management("sgid_pcts_dissolved_spjoin7.shp", "utah_vp_civix.shp", "NO_TEST")
+arcpy.Append_management(sgid_pct_dissolved_joined, "utah_vp_civix.shp", "NO_TEST")
